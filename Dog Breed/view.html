@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dog Breed Details</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #e0f7fa;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin-top: 50px;
+    }
+    .card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .btn-custom {
+      background-color: #0288d1;
+      color: white;
+    }
+    .btn-custom:hover {
+      background-color: #0277bd;
+    }
+  </style>
+</head>
+<body>
+
+    <div class="container text-center">
+        <h1 id="breedTitle" class="mb-4"></h1>
+        <div id="breedImageContainer" class="mb-3"></div>
+        <a href="index.html" class="btn btn-custom">Back to Search</a>
+      </div>
+      
+      <script>
+        async function loadBreedDetails() {
+          const urlParams = new URLSearchParams(window.location.search);
+          const breed = urlParams.get('breed');
+          const breedTitle = document.getElementById('breedTitle');
+          const breedImageContainer = document.getElementById('breedImageContainer');
+      
+          if (breed) {
+            breedTitle.innerText = `Breed: ${breed.charAt(0).toUpperCase() + breed.slice(1)}`;
+
+            try {
+              const response = await fetch(`https://dog.ceo/api/breed/${breed}/images/random`);
+              const data = await response.json();
+      
+              if (data.status === "success") {
+                breedImageContainer.innerHTML = `<img src="${data.message}" class="img-fluid rounded" alt="Image of ${breed}">`;
+              } else {
+                breedImageContainer.innerHTML = '<p class="text-danger">Breed image not found.</p>';
+              }
+            } catch (error) {
+              breedImageContainer.innerHTML = '<p class="text-danger">Error fetching breed details.</p>';
+            }
+          } else {
+            breedTitle.innerText = 'Breed not specified';
+          }
+        }
+
+        window.onload = loadBreedDetails;
+    </script>
+    
+    </body>
+    </html>
